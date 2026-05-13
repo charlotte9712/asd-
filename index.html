@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孤独症儿童社交训练个案记录系统</title>
+    <style>
+        :root {
+            --primary: #2c5f8a;
+            --primary-light: #e8f2f9;
+            --border: #c5d5e4;
+            --bg: #f7f9fb;
+            --text: #2a2a2a;
+            --white: #ffffff;
+            --danger: #b8453a;
+            --danger-light: #fdf0ef;
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            --radius: 6px;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background: #eef3f7;
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .app-header {
+            background: var(--white);
+            border-bottom: 2px solid var(--border);
+            padding: 14px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        .institution-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            border: 1px dashed transparent;
+            padding: 4px 12px;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 200px;
+            max-width: 500px;
+            display: inline-block;
+            transition: 0.2s;
+            background: transparent;
+            outline: none;
+            font-family: var(--font);
+        }
+        .institution-name:hover,
+        .institution-name:focus {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a3a54;
+            margin: 2px 0 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 10px 16px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 101px;
+            z-index: 99;
+            box-shadow: var(--shadow);
+        }
+        .btn {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: var(--font);
+            background: var(--white);
+            color: var(--text);
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            transition: all 0.15s;
+        }
+        .btn:hover {
+            background: #e9f0f6;
+            border-color: #a0b8cc;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: #1e4d72;
+        }
+        .btn-word {
+            background: #2b579a;
+            color: #fff;
+            border-color: #2b579a;
+            font-weight: 600;
+        }
+        .btn-word:hover {
+            background: #1e3f73;
+        }
+        .btn-danger {
+            color: var(--danger);
+            border-color: #d4a0a0;
+        }
+        .btn-danger:hover {
+            background: var(--danger-light);
+        }
+        .btn-export {
+            background: #f5f0e8;
+            color: #6b5a3e;
+            border-color: #c9b896;
+        }
+        .btn-export:hover {
+            background: #ede3d2;
+        }
+
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 16px 12px 40px;
+        }
+        .section-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .section-title {
+            background: #eaf2f9;
+            padding: 11px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #1a3a54;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .section-body {
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 4px 0;
+            min-width: 600px;
+        }
+        table th,
+        table td {
+            border: 1px solid var(--border);
+            padding: 7px 9px;
+            text-align: left;
+            vertical-align: top;
+        }
+        table th {
+            background: #f4f7fa;
+            font-weight: 600;
+            color: #2c4a62;
+            white-space: nowrap;
+            font-size: 12.5px;
+        }
+        table td input[type="text"],
+        table td input[type="date"],
+        table td textarea {
+            width: 100%;
+            border: 1px solid #e0e6ec;
+            border-radius: 3px;
+            padding: 5px 7px;
+            font-size: 13px;
+            font-family: var(--font);
+            background: #fafbfc;
+            transition: border-color 0.15s, background 0.15s;
+            min-width: 60px;
+        }
+        table td input:focus,
+        table td textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(44, 95, 138, 0.08);
+        }
+        table td textarea {
+            resize: vertical;
+            min-height: 50px;
+            max-height: 150px;
+        }
+        .col-narrow {
+            width: 80px;
+        }
+        .col-medium {
+            width: 130px;
+        }
+
+        .scroll-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        .scroll-table-wrap table {
+            min-width: 900px;
+        }
+        .scroll-table-wrap table td input {
+            min-width: 70px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .form-row label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #3a556b;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+        .form-row input[type="text"],
+        .form-row input[type="date"],
+        .form-row select {
+            padding: 6px 10px;
+            border: 1px solid #e0e6ec;
+            border-radius: 3px;
+            font-size: 13px;
+            font-family: var(--font);
+            background: #fafbfc;
+            flex: 1;
+            min-width: 100px;
+            max-width: 280px;
+        }
+        .form-row input:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(44, 95, 138, 0.08);
+        }
+        .full-width-textarea {
+            width: 100%;
+            border: 1px solid #e0e6ec;
+            border-radius: 3px;
+            padding: 8px 10px;
+            font-size: 13px;
+            font-family: var(--font);
+            resize: vertical;
+            min-height: 70px;
+            background: #fafbfc;
+            margin-top: 4px;
+        }
+        .full-width-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(44, 95, 138, 0.08);
+        }
+
+        .add-row-btn {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 6px 14px;
+            background: #eaf2f9;
+            border: 1px dashed var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            font-family: var(--font);
+            transition: all 0.15s;
+        }
+        .add-row-btn:hover {
+            background: #d5e6f5;
+            border-style: solid;
+        }
+        .delete-row-btn {
+            background: none;
+            border: none;
+            color: #c0392b;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 6px;
+            line-height: 1;
+            border-radius: 3px;
+            transition: all 0.15s;
+            font-family: var(--font);
+        }
+        .delete-row-btn:hover {
+            background: #fde8e8;
+            color: #a93226;
+        }
+
+        .hint-text {
+            font-size: 11px;
+            color: #8a9aaa;
+            margin-top: 2px;
+            font-style: italic;
+        }
+
+        .print-header {
+            display: none;
+            text-align: center;
+            padding: 8px;
+            border-bottom: 2px solid #000;
+            margin-bottom: 10px;
+        }
+        .print-header .ph-archive {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a2a;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            font-family: var(--font);
+            letter-spacing: 0.3px;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .toast.success {
+            background: #2d7d46;
+        }
+        .toast.warning {
+            background: #c57a2a;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                font-size: 11px;
+                color: #000;
+            }
+            .app-header {
+                position: static;
+                box-shadow: none;
+                border-bottom: 2px solid #000;
+                padding: 6px 10px;
+            }
+            .institution-name {
+                border: none !important;
+                background: none !important;
+                font-size: 15px;
+                font-weight: 700;
+            }
+            .page-title {
+                font-size: 17px;
+            }
+            .btn-toolbar {
+                display: none !important;
+            }
+            .add-row-btn,
+            .delete-row-btn {
+                display: none !important;
+            }
+            .main-container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            .section-card {
+                box-shadow: none;
+                border: 1px solid #999;
+                margin-bottom: 8px;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .section-title {
+                background: #e0e0e0 !important;
+                color: #000;
+                font-size: 13px;
+            }
+            table {
+                font-size: 10px;
+                min-width: auto;
+            }
+            table th {
+                background: #f0f0f0 !important;
+                font-size: 10px;
+            }
+            table td input,
+            table td textarea {
+                border: 1px solid #ccc;
+                font-size: 10px;
+                background: #fff;
+            }
+            .scroll-table-wrap {
+                overflow-x: visible;
+            }
+            .scroll-table-wrap table {
+                min-width: auto;
+                font-size: 9px;
+            }
+            .print-header {
+                display: block !important;
+            }
+            .full-width-textarea {
+                font-size: 10px;
+            }
+            @page {
+                margin: 10mm;
+                size: A4;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .btn-toolbar {
+                gap: 5px;
+                padding: 8px 8px;
+                top: 85px;
+            }
+            .btn {
+                padding: 6px 11px;
+                font-size: 11px;
+            }
+            .section-body {
+                padding: 8px 6px;
+            }
+            table {
+                font-size: 11px;
+                min-width: 500px;
+            }
+            table td input,
+            table td textarea {
+                font-size: 11px;
+                padding: 4px 5px;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+            .form-row input[type="text"],
+            .form-row input[type="date"] {
+                max-width: 100%;
+            }
+            .scroll-table-wrap table {
+                min-width: 700px;
+            }
+        }
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 16px;
+            }
+            .institution-name {
+                font-size: 13px;
+                max-width: 90%;
+            }
+            .btn {
+                padding: 5px 8px;
+                font-size: 10px;
+            }
+            table {
+                min-width: 400px;
+                font-size: 10px;
+            }
+            .scroll-table-wrap table {
+                min-width: 550px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toast" id="toast"></div>
+
+    <header class="app-header">
+        <input type="text" class="institution-name" id="institutionName" value="盐城妇幼保健院儿童保健科" title="点击修改机构名称">
+        <div class="page-title">孤独症儿童社交训练个案记录系统</div>
+    </header>
+
+    <div class="btn-toolbar" id="btnToolbar">
+        <button class="btn btn-primary" onclick="saveData()">💾 保存当前所有数据</button>
+        <button class="btn" onclick="loadData()">📂 加载已存数据</button>
+        <button class="btn btn-export" onclick="exportJSON()">📥 导出JSON</button>
+        <button class="btn btn-export" onclick="importJSON()">📤 导入JSON</button>
+        <button class="btn btn-word" onclick="exportWord()">📄 导出Word</button>
+        <button class="btn btn-danger" onclick="clearAll()">🗑️ 清空表单</button>
+        <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="handleImportFile(event)">
+    </div>
+
+    <div class="print-header" id="printHeader">
+        <span class="ph-archive">档案编号：<span id="phArchiveNo">________</span></span> &nbsp;|&nbsp;
+        <span>儿童姓名：<span id="phChildName">________</span></span>
+    </div>
+
+    <div class="main-container" id="mainContent">
+
+        <!-- 表格1：基本信息登记表 -->
+        <div class="section-card">
+            <div class="section-title">表格1：基本信息登记表</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>档案编号：</label><input type="text" id="t1_archiveNo" placeholder="如 ZBK-2026-0001">
+                    <label>登记日期：</label><input type="date" id="t1_regDate">
+                </div>
+                <div class="form-row">
+                    <label>姓名：</label><input type="text" id="t1_name" placeholder="儿童姓名">
+                    <label>性别：</label>
+                    <select id="t1_gender"><option value="">请选择</option><option>男</option><option>女</option></select>
+                    <label>出生日期：</label><input type="date" id="t1_birthDate">
+                    <label>实足年龄：</label><input type="text" id="t1_age" placeholder="如 4岁2个月" style="max-width:120px;">
+                </div>
+                <div class="form-row">
+                    <label>诊断名称：</label><input type="text" id="t1_diagnosis" placeholder="如 童年孤独症">
+                    <label>诊断机构：</label><input type="text" id="t1_diagOrg" placeholder="诊断医院/科室">
+                </div>
+                <div class="form-row">
+                    <label>诊断日期：</label><input type="date" id="t1_diagDate">
+                    <label>诊断工具：</label><input type="text" id="t1_diagTool" placeholder="如 ADOS-2、CARS">
+                </div>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">其他医学情况：</label>
+                <textarea class="full-width-textarea" id="t1_otherMedical" placeholder="如过敏史、特殊疾病史、用药情况等"></textarea>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">发育史（母孕期、喂养、里程碑等）：</label>
+                <textarea class="full-width-textarea" id="t1_devHistory" placeholder="母孕期情况、喂养史、大运动/精细动作/语言/社交里程碑等"></textarea>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">既往干预经历：</label>
+                <textarea class="full-width-textarea" id="t1_prevIntervention" placeholder="之前接受过的康复训练、时长、效果等"></textarea>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">家庭成员及照护信息、家庭期望：</label>
+                <textarea class="full-width-textarea" id="t1_familyInfo" placeholder="主要照护者、家庭教养方式、成员关系、对孩子的期望等"></textarea>
+            </div>
+        </div>
+
+        <!-- 表格2：知情同意书套装 -->
+        <div class="section-card">
+            <div class="section-title">表格2：知情同意书套装</div>
+            <div class="section-body">
+                <h4 style="color:#2c5f8a;margin-bottom:6px;">2.1 评估知情同意书</h4>
+                <div class="form-row">
+                    <label>家长姓名：</label><input type="text" id="t2a_parentName" placeholder="签字">
+                    <label>与儿童关系：</label><input type="text" id="t2a_relation" placeholder="如 母子">
+                    <label>儿童姓名：</label><input type="text" id="t2a_childName" placeholder="儿童姓名">
+                </div>
+                <div class="form-row">
+                    <label>治疗师姓名：</label><input type="text" id="t2a_therapist" placeholder="治疗师">
+                    <label>日期：</label><input type="date" id="t2a_date">
+                </div>
+                <hr style="margin:10px 0;border-color:#e0e6ec;">
+                <h4 style="color:#2c5f8a;margin-bottom:6px;">2.2 训练知情同意书</h4>
+                <div class="form-row">
+                    <label>家长姓名：</label><input type="text" id="t2b_parentName" placeholder="签字">
+                    <label>与儿童关系：</label><input type="text" id="t2b_relation" placeholder="如 母子">
+                    <label>儿童姓名：</label><input type="text" id="t2b_childName" placeholder="儿童姓名">
+                </div>
+                <div class="form-row">
+                    <label>治疗师姓名：</label><input type="text" id="t2b_therapist" placeholder="治疗师">
+                    <label>日期：</label><input type="date" id="t2b_date">
+                </div>
+                <hr style="margin:10px 0;border-color:#e0e6ec;">
+                <h4 style="color:#2c5f8a;margin-bottom:6px;">2.3 个人信息使用授权书</h4>
+                <div class="form-row">
+                    <label>家长签名：</label><input type="text" id="t2c_signature" placeholder="签字">
+                    <label>是否授权：</label>
+                    <label style="font-weight:400;"><input type="radio" name="t2c_auth" value="同意" id="t2c_auth_yes"> 同意</label>
+                    <label style="font-weight:400;"><input type="radio" name="t2c_auth" value="不同意" id="t2c_auth_no"> 不同意</label>
+                    <label>日期：</label><input type="date" id="t2c_date">
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格3：个别化教育计划（IEP） -->
+        <div class="section-card">
+            <div class="section-title">表格3：个别化教育计划（IEP）</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>档案编号：</label><input type="text" id="t3_archiveNo" placeholder="档案编号">
+                    <label>有效期起：</label><input type="date" id="t3_startDate">
+                    <label>有效期止：</label><input type="date" id="t3_endDate">
+                </div>
+                <div class="form-row">
+                    <label>领域：</label><input type="text" id="t3_domain" value="社交沟通与社会适应" style="max-width:350px;">
+                </div>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">基线能力描述：</label>
+                <textarea class="full-width-textarea" id="t3_baseline" placeholder="干预前儿童在社交沟通方面的能力基线描述"></textarea>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">长期目标（6个月）：</label>
+                <textarea class="full-width-textarea" id="t3_longGoal1" placeholder="长期目标1"></textarea>
+                <textarea class="full-width-textarea" id="t3_longGoal2" placeholder="长期目标2" style="margin-top:4px;"></textarea>
+                <textarea class="full-width-textarea" id="t3_longGoal3" placeholder="长期目标3" style="margin-top:4px;"></textarea>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;">短期目标（1-3个月）：</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:200px;">
+                        <span style="font-size:12px;color:#5a7a90;">目标1：</span>
+                        <textarea class="full-width-textarea" id="t3_shortGoal1" placeholder="短期目标1描述" style="min-height:50px;"></textarea>
+                        <span style="font-size:12px;color:#5a7a90;">评测标准：</span>
+                        <textarea class="full-width-textarea" id="t3_shortEval1" placeholder="评测标准" style="min-height:50px;"></textarea>
+                    </div>
+                    <div style="flex:1;min-width:200px;">
+                        <span style="font-size:12px;color:#5a7a90;">目标2：</span>
+                        <textarea class="full-width-textarea" id="t3_shortGoal2" placeholder="短期目标2描述" style="min-height:50px;"></textarea>
+                        <span style="font-size:12px;color:#5a7a90;">评测标准：</span>
+                        <textarea class="full-width-textarea" id="t3_shortEval2" placeholder="评测标准" style="min-height:50px;"></textarea>
+                    </div>
+                    <div style="flex:1;min-width:200px;">
+                        <span style="font-size:12px;color:#5a7a90;">目标3：</span>
+                        <textarea class="full-width-textarea" id="t3_shortGoal3" placeholder="短期目标3描述" style="min-height:50px;"></textarea>
+                        <span style="font-size:12px;color:#5a7a90;">评测标准：</span>
+                        <textarea class="full-width-textarea" id="t3_shortEval3" placeholder="评测标准" style="min-height:50px;"></textarea>
+                    </div>
+                </div>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;margin-top:8px;display:block;">实施策略：</label>
+                <textarea class="full-width-textarea" id="t3_strategy" placeholder="强调在自然情境与游戏中渗透，跟随动机，制造沟通机会等"></textarea>
+                <div class="form-row" style="margin-top:8px;">
+                    <label>计划制定人：</label><input type="text" id="t3_planner" placeholder="制定人">
+                    <label>日期：</label><input type="date" id="t3_planDate">
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格4：活动式教学与互动记录表 -->
+        <div class="section-card">
+            <div class="section-title">表格4：活动式教学与互动记录表（单次记录）</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>日期/时间：</label><input type="text" id="t4_datetime" placeholder="如 2026-04-15 9:30-10:30" style="max-width:220px;">
+                    <label>执行人：</label><input type="text" id="t4_executor" placeholder="治疗师姓名" style="max-width:150px;">
+                    <label>参与家长/人员：</label><input type="text" id="t4_participants" placeholder="如 妈妈" style="max-width:150px;">
+                </div>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:18%;">活动/情境</th>
+                                <th style="width:28%;">孩子的表现与反应</th>
+                                <th style="width:28%;">自然发生的社交行为及频次</th>
+                                <th style="width:22%;">成人策略与回应</th>
+                                <th style="width:4%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="t4_activityRows">
+                            <tr>
+                                <td><input type="text" class="t4_col1" placeholder="活动/情境"></td>
+                                <td><input type="text" class="t4_col2" placeholder="孩子表现"></td>
+                                <td><input type="text" class="t4_col3" placeholder="社交行为及频次"></td>
+                                <td><input type="text" class="t4_col4" placeholder="成人策略"></td>
+                                <td><button class="delete-row-btn" onclick="deleteRow(this)" title="删除此行">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRowT4()">＋ 添加活动行</button>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;margin-top:8px;display:block;">总结与下一步：</label>
+                <textarea class="full-width-textarea" id="t4_summary" placeholder="本次互动总结及下一步计划"></textarea>
+            </div>
+        </div>
+
+        <!-- 表格5：社交行为专项观察记录表（周） -->
+        <div class="section-card">
+            <div class="section-title">表格5：社交行为专项观察记录表（周）</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>观察周期：</label><input type="text" id="t5_period" placeholder="如 2026.4.20 — 2026.4.24" style="max-width:260px;">
+                    <label>记录人：</label><input type="text" id="t5_recorder" placeholder="记录人" style="max-width:150px;">
+                </div>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:12%;">社交维度</th>
+                                <th style="width:13%;">周一</th>
+                                <th style="width:13%;">周二</th>
+                                <th style="width:13%;">周三</th>
+                                <th style="width:13%;">周四</th>
+                                <th style="width:13%;">周五</th>
+                                <th style="width:23%;">周趋势与轶事记录</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>主动性注视</strong></td><td><input type="text" id="t5_row1_mon"></td><td><input type="text" id="t5_row1_tue"></td><td><input type="text" id="t5_row1_wed"></td><td><input type="text" id="t5_row1_thu"></td><td><input type="text" id="t5_row1_fri"></td><td><textarea id="t5_row1_trend" style="min-height:40px;"></textarea></td></tr>
+                            <tr><td><strong>回应他人/呼名</strong></td><td><input type="text" id="t5_row2_mon"></td><td><input type="text" id="t5_row2_tue"></td><td><input type="text" id="t5_row2_wed"></td><td><input type="text" id="t5_row2_thu"></td><td><input type="text" id="t5_row2_fri"></td><td><textarea id="t5_row2_trend" style="min-height:40px;"></textarea></td></tr>
+                            <tr><td><strong>主动发起互动</strong></td><td><input type="text" id="t5_row3_mon"></td><td><input type="text" id="t5_row3_tue"></td><td><input type="text" id="t5_row3_wed"></td><td><input type="text" id="t5_row3_thu"></td><td><input type="text" id="t5_row3_fri"></td><td><textarea id="t5_row3_trend" style="min-height:40px;"></textarea></td></tr>
+                            <tr><td><strong>对同伴的注意</strong></td><td><input type="text" id="t5_row4_mon"></td><td><input type="text" id="t5_row4_tue"></td><td><input type="text" id="t5_row4_wed"></td><td><input type="text" id="t5_row4_thu"></td><td><input type="text" id="t5_row4_fri"></td><td><textarea id="t5_row4_trend" style="min-height:40px;"></textarea></td></tr>
+                            <tr><td><strong>情绪调节</strong></td><td><input type="text" id="t5_row5_mon"></td><td><input type="text" id="t5_row5_tue"></td><td><input type="text" id="t5_row5_wed"></td><td><input type="text" id="t5_row5_thu"></td><td><input type="text" id="t5_row5_fri"></td><td><textarea id="t5_row5_trend" style="min-height:40px;"></textarea></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;margin-top:8px;display:block;">周总结：</label>
+                <textarea class="full-width-textarea" id="t5_weekSummary" placeholder="本周总体观察总结及下周调整方向"></textarea>
+            </div>
+        </div>
+
+        <!-- 表格6：个案观察记录汇总表（月度） -->
+        <div class="section-card">
+            <div class="section-title">表格6：个案观察记录汇总表（月度）</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>记录月份：</label><input type="text" id="t6_month" placeholder="如 2026年5月" style="max-width:180px;">
+                    <label>出勤天数：</label><input type="text" id="t6_attendance" placeholder="如 20/22天" style="max-width:120px;">
+                </div>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:25%;">本月重点发展区域</th>
+                                <th style="width:35%;">进展观察</th>
+                                <th style="width:35%;">反思与下月方向</th>
+                                <th style="width:5%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="t6_monthlyRows">
+                            <tr>
+                                <td><input type="text" class="t6_col1" placeholder="本月重点"></td>
+                                <td><input type="text" class="t6_col2" placeholder="进展观察"></td>
+                                <td><input type="text" class="t6_col3" placeholder="反思与方向"></td>
+                                <td><button class="delete-row-btn" onclick="deleteRow(this)" title="删除此行">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRowT6()">＋ 添加月度重点行</button>
+                <label style="font-weight:600;font-size:13px;color:#3a556b;margin-top:8px;display:block;">整体状态总评：</label>
+                <textarea class="full-width-textarea" id="t6_overall" placeholder="月度整体状态评价"></textarea>
+            </div>
+        </div>
+
+        <!-- 表格7：康复服务阶段性评估表 -->
+        <div class="section-card">
+            <div class="section-title">表格7：康复服务阶段性评估表</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>档案编号：</label><input type="text" id="t7_archiveNo" placeholder="档案编号">
+                    <label>评估周期起：</label><input type="date" id="t7_startDate">
+                    <label>评估周期止：</label><input type="date" id="t7_endDate">
+                    <label>填写日期：</label><input type="date" id="t7_fillDate">
+                </div>
+                <label>一、个案描述与服务目标回顾：</label>
+                <textarea class="full-width-textarea" id="t7_section1"></textarea>
+                <label>二、已提供服务及进展情况：</label>
+                <textarea class="full-width-textarea" id="t7_section2"></textarea>
+                <label>三、儿童现状：</label>
+                <textarea class="full-width-textarea" id="t7_section3"></textarea>
+                <label>四、下一期服务建议：</label>
+                <textarea class="full-width-textarea" id="t7_section4"></textarea>
+                <div class="form-row" style="margin-top:8px;">
+                    <label>康复服务工作者签字：</label><input type="text" id="t7_workerSign" style="max-width:180px;">
+                    <label>家长签字：</label><input type="text" id="t7_parentSign" style="max-width:180px;">
+                    <label>日期：</label><input type="date" id="t7_signDate">
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格8：评估结果对比与动态方案调整记录 -->
+        <div class="section-card">
+            <div class="section-title">表格8：评估结果对比与动态方案调整记录</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>对比时间点①：</label><input type="date" id="t8_time1">
+                    <label>对比时间点②：</label><input type="date" id="t8_time2">
+                </div>
+                <h4 style="color:#2c5f8a;">关键社交指标对比</h4>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead><tr><th>指标名称</th><th>干预前表现</th><th>复评时表现</th><th>变化描述</th><th>操作</th></tr></thead>
+                        <tbody id="t8_indicatorRows">
+                            <tr>
+                                <td><input type="text" class="t8i_col1"></td>
+                                <td><input type="text" class="t8i_col2"></td>
+                                <td><input type="text" class="t8i_col3"></td>
+                                <td><input type="text" class="t8i_col4"></td>
+                                <td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRowT8Indicators()">＋ 添加指标行</button>
+
+                <h4 style="color:#2c5f8a;margin-top:14px;">方案动态调整</h4>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead><tr><th>原策略</th><th>调整后策略</th><th>调整理由</th><th>操作</th></tr></thead>
+                        <tbody id="t8_adjustRows">
+                            <tr>
+                                <td><input type="text" class="t8a_col1"></td>
+                                <td><input type="text" class="t8a_col2"></td>
+                                <td><input type="text" class="t8a_col3"></td>
+                                <td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRowT8Adjust()">＋ 添加调整行</button>
+            </div>
+        </div>
+
+        <!-- 表格9：康复结案表 -->
+        <div class="section-card">
+            <div class="section-title">表格9：康复结案表</div>
+            <div class="section-body">
+                <div class="form-row">
+                    <label>档案编号：</label><input type="text" id="t9_archiveNo">
+                    <label>项目周期：</label><input type="text" id="t9_period" style="max-width:280px;">
+                </div>
+                <label>结案原因：</label>
+                <div style="display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 8px;">
+                    <label><input type="checkbox" id="t9_reason1" value="目标基本达成"> 目标基本达成</label>
+                    <label><input type="checkbox" id="t9_reason2" value="家庭原因中止"> 家庭原因中止</label>
+                    <label><input type="checkbox" id="t9_reason3" value="转介至其他机构"> 转介至其他机构</label>
+                    <label>其他：<input type="text" id="t9_reasonOther" style="width:180px;"></label>
+                </div>
+                <label>服务历程总结：</label>
+                <textarea class="full-width-textarea" id="t9_summary"></textarea>
+                <label>仍存障碍：</label>
+                <textarea class="full-width-textarea" id="t9_remaining"></textarea>
+                <label>后续追踪及支持：</label>
+                <textarea class="full-width-textarea" id="t9_followUp"></textarea>
+                <label>家长反馈：</label>
+                <textarea class="full-width-textarea" id="t9_parentFeedback"></textarea>
+                <div class="form-row" style="margin-top:8px;">
+                    <label>治疗师签名：</label><input type="text" id="t9_therapistSign" style="max-width:180px;">
+                    <label>结案日期：</label><input type="date" id="t9_closeDate">
+                </div>
+            </div>
+        </div>
+
+        <!-- 表格10：偏好物/动机评估与家长访谈 -->
+        <div class="section-card">
+            <div class="section-title">表格10：偏好物/动机评估与家长访谈</div>
+            <div class="section-body">
+                <h4 style="color:#2c5f8a;">偏好物/兴趣清单（动机评估）</h4>
+                <div class="scroll-table-wrap">
+                    <table>
+                        <thead><tr><th>物品/活动</th><th>孩子反应</th><th>可作为动力的情境</th><th>操作</th></tr></thead>
+                        <tbody id="t10_prefRows">
+                            <tr>
+                                <td><input type="text" class="t10_col1"></td>
+                                <td><input type="text" class="t10_col2"></td>
+                                <td><input type="text" class="t10_col3"></td>
+                                <td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="add-row-btn" onclick="addRowT10()">＋ 添加偏好物行</button>
+                <label style="font-weight:600;margin-top:12px;display:block;">家长访谈要点：</label>
+                <textarea class="full-width-textarea" id="t10_parentInterview" placeholder="记录家长访谈中的关键信息"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Toast 提示
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + (type || '') + ' show';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.className = 'toast'; }, 2200);
+        }
+
+        // 删除动态行
+        function deleteRow(btn) {
+            const row = btn.closest('tr');
+            const tbody = row.parentElement;
+            if (tbody.querySelectorAll('tr').length <= 1) {
+                showToast('至少保留一行', 'warning');
+                return;
+            }
+            row.remove();
+        }
+
+        function addRowT4() {
+            const tbody = document.getElementById('t4_activityRows');
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="text" class="t4_col1"></td><td><input type="text" class="t4_col2"></td><td><input type="text" class="t4_col3"></td><td><input type="text" class="t4_col4"></td><td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>';
+            tbody.appendChild(tr);
+        }
+        function addRowT6() {
+            const tbody = document.getElementById('t6_monthlyRows');
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="text" class="t6_col1"></td><td><input type="text" class="t6_col2"></td><td><input type="text" class="t6_col3"></td><td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>';
+            tbody.appendChild(tr);
+        }
+        function addRowT8Indicators() {
+            const tbody = document.getElementById('t8_indicatorRows');
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="text" class="t8i_col1"></td><td><input type="text" class="t8i_col2"></td><td><input type="text" class="t8i_col3"></td><td><input type="text" class="t8i_col4"></td><td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>';
+            tbody.appendChild(tr);
+        }
+        function addRowT8Adjust() {
+            const tbody = document.getElementById('t8_adjustRows');
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="text" class="t8a_col1"></td><td><input type="text" class="t8a_col2"></td><td><input type="text" class="t8a_col3"></td><td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>';
+            tbody.appendChild(tr);
+        }
+        function addRowT10() {
+            const tbody = document.getElementById('t10_prefRows');
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td><input type="text" class="t10_col1"></td><td><input type="text" class="t10_col2"></td><td><input type="text" class="t10_col3"></td><td><button class="delete-row-btn" onclick="deleteRow(this)">✕</button></td>';
+            tbody.appendChild(tr);
+        }
+
+        function collectDynamicRows(tbodyId, colClasses) {
+            const rows = document.getElementById(tbodyId).querySelectorAll('tr');
+            const data = [];
+            rows.forEach(row => {
+                const rowData = [];
+                colClasses.forEach(cls => {
+                    const input = row.querySelector('.' + cls);
+                    rowData.push(input ? input.value : '');
+                });
+                data.push(rowData);
+            });
+            return data;
+        }
+
+        function restoreDynamicRows(tbodyId, colClasses, dataArray, addFn) {
+            const tbody = document.getElementById(tbodyId);
+            tbody.innerHTML = '';
+            if (!dataArray || dataArray.length === 0) { addFn(); return; }
+            dataArray.forEach(rowData => {
+                addFn();
+                const lastRow = tbody.lastChild;
+                colClasses.forEach((cls, idx) => {
+                    const input = lastRow.querySelector('.' + cls);
+                    if (input && rowData[idx] !== undefined) input.value = rowData[idx];
+                });
+            });
+        }
+
+        function collectAllData() {
+            const data = {
+                institutionName: document.getElementById('institutionName').value,
+                t1: {
+                    archiveNo: document.getElementById('t1_archiveNo').value,
+                    regDate: document.getElementById('t1_regDate').value,
+                    name: document.getElementById('t1_name').value,
+                    gender: document.getElementById('t1_gender').value,
+                    birthDate: document.getElementById('t1_birthDate').value,
+                    age: document.getElementById('t1_age').value,
+                    diagnosis: document.getElementById('t1_diagnosis').value,
+                    diagOrg: document.getElementById('t1_diagOrg').value,
+                    diagDate: document.getElementById('t1_diagDate').value,
+                    diagTool: document.getElementById('t1_diagTool').value,
+                    otherMedical: document.getElementById('t1_otherMedical').value,
+                    devHistory: document.getElementById('t1_devHistory').value,
+                    prevIntervention: document.getElementById('t1_prevIntervention').value,
+                    familyInfo: document.getElementById('t1_familyInfo').value,
+                },
+                t2: {
+                    a_parentName: document.getElementById('t2a_parentName').value,
+                    a_relation: document.getElementById('t2a_relation').value,
+                    a_childName: document.getElementById('t2a_childName').value,
+                    a_therapist: document.getElementById('t2a_therapist').value,
+                    a_date: document.getElementById('t2a_date').value,
+                    b_parentName: document.getElementById('t2b_parentName').value,
+                    b_relation: document.getElementById('t2b_relation').value,
+                    b_childName: document.getElementById('t2b_childName').value,
+                    b_therapist: document.getElementById('t2b_therapist').value,
+                    b_date: document.getElementById('t2b_date').value,
+                    c_signature: document.getElementById('t2c_signature').value,
+                    c_auth: document.getElementById('t2c_auth_yes').checked ? '同意' : (document.getElementById('t2c_auth_no').checked ? '不同意' : ''),
+                    c_date: document.getElementById('t2c_date').value,
+                },
+                t3: {
+                    archiveNo: document.getElementById('t3_archiveNo').value,
+                    startDate: document.getElementById('t3_startDate').value,
+                    endDate: document.getElementById('t3_endDate').value,
+                    domain: document.getElementById('t3_domain').value,
+                    baseline: document.getElementById('t3_baseline').value,
+                    longGoal1: document.getElementById('t3_longGoal1').value,
+                    longGoal2: document.getElementById('t3_longGoal2').value,
+                    longGoal3: document.getElementById('t3_longGoal3').value,
+                    shortGoal1: document.getElementById('t3_shortGoal1').value,
+                    shortEval1: document.getElementById('t3_shortEval1').value,
+                    shortGoal2: document.getElementById('t3_shortGoal2').value,
+                    shortEval2: document.getElementById('t3_shortEval2').value,
+                    shortGoal3: document.getElementById('t3_shortGoal3').value,
+                    shortEval3: document.getElementById('t3_shortEval3').value,
+                    strategy: document.getElementById('t3_strategy').value,
+                    planner: document.getElementById('t3_planner').value,
+                    planDate: document.getElementById('t3_planDate').value,
+                },
+                t4: {
+                    datetime: document.getElementById('t4_datetime').value,
+                    executor: document.getElementById('t4_executor').value,
+                    participants: document.getElementById('t4_participants').value,
+                    activityRows: collectDynamicRows('t4_activityRows', ['t4_col1','t4_col2','t4_col3','t4_col4']),
+                    summary: document.getElementById('t4_summary').value,
+                },
+                t5: {
+                    period: document.getElementById('t5_period').value,
+                    recorder: document.getElementById('t5_recorder').value,
+                    rows: [],
+                    weekSummary: document.getElementById('t5_weekSummary').value,
+                },
+                t6: {
+                    month: document.getElementById('t6_month').value,
+                    attendance: document.getElementById('t6_attendance').value,
+                    monthlyRows: collectDynamicRows('t6_monthlyRows', ['t6_col1','t6_col2','t6_col3']),
+                    overall: document.getElementById('t6_overall').value,
+                },
+                t7: {
+                    archiveNo: document.getElementById('t7_archiveNo').value,
+                    startDate: document.getElementById('t7_startDate').value,
+                    endDate: document.getElementById('t7_endDate').value,
+                    fillDate: document.getElementById('t7_fillDate').value,
+                    section1: document.getElementById('t7_section1').value,
+                    section2: document.getElementById('t7_section2').value,
+                    section3: document.getElementById('t7_section3').value,
+                    section4: document.getElementById('t7_section4').value,
+                    workerSign: document.getElementById('t7_workerSign').value,
+                    parentSign: document.getElementById('t7_parentSign').value,
+                    signDate: document.getElementById('t7_signDate').value,
+                },
+                t8: {
+                    time1: document.getElementById('t8_time1').value,
+                    time2: document.getElementById('t8_time2').value,
+                    indicatorRows: collectDynamicRows('t8_indicatorRows', ['t8i_col1','t8i_col2','t8i_col3','t8i_col4']),
+                    adjustRows: collectDynamicRows('t8_adjustRows', ['t8a_col1','t8a_col2','t8a_col3']),
+                },
+                t9: {
+                    archiveNo: document.getElementById('t9_archiveNo').value,
+                    period: document.getElementById('t9_period').value,
+                    reasons: {
+                        reason1: document.getElementById('t9_reason1').checked,
+                        reason2: document.getElementById('t9_reason2').checked,
+                        reason3: document.getElementById('t9_reason3').checked,
+                        reasonOther: document.getElementById('t9_reasonOther').value,
+                    },
+                    summary: document.getElementById('t9_summary').value,
+                    remaining: document.getElementById('t9_remaining').value,
+                    followUp: document.getElementById('t9_followUp').value,
+                    parentFeedback: document.getElementById('t9_parentFeedback').value,
+                    therapistSign: document.getElementById('t9_therapistSign').value,
+                    closeDate: document.getElementById('t9_closeDate').value,
+                },
+                t10: {
+                    prefRows: collectDynamicRows('t10_prefRows', ['t10_col1','t10_col2','t10_col3']),
+                    parentInterview: document.getElementById('t10_parentInterview').value,
+                },
+            };
+            for (let i=1; i<=5; i++) {
+                data.t5.rows.push({
+                    mon: document.getElementById('t5_row'+i+'_mon').value,
+                    tue: document.getElementById('t5_row'+i+'_tue').value,
+                    wed: document.getElementById('t5_row'+i+'_wed').value,
+                    thu: document.getElementById('t5_row'+i+'_thu').value,
+                    fri: document.getElementById('t5_row'+i+'_fri').value,
+                    trend: document.getElementById('t5_row'+i+'_trend').value,
+                });
+            }
+            return data;
+        }
+
+        function restoreAllData(data) {
+            if (!data) return;
+            if (data.institutionName) document.getElementById('institutionName').value = data.institutionName;
+            if (data.t1) {
+                const t1 = data.t1;
+                document.getElementById('t1_archiveNo').value = t1.archiveNo||'';
+                document.getElementById('t1_regDate').value = t1.regDate||'';
+                document.getElementById('t1_name').value = t1.name||'';
+                document.getElementById('t1_gender').value = t1.gender||'';
+                document.getElementById('t1_birthDate').value = t1.birthDate||'';
+                document.getElementById('t1_age').value = t1.age||'';
+                document.getElementById('t1_diagnosis').value = t1.diagnosis||'';
+                document.getElementById('t1_diagOrg').value = t1.diagOrg||'';
+                document.getElementById('t1_diagDate').value = t1.diagDate||'';
+                document.getElementById('t1_diagTool').value = t1.diagTool||'';
+                document.getElementById('t1_otherMedical').value = t1.otherMedical||'';
+                document.getElementById('t1_devHistory').value = t1.devHistory||'';
+                document.getElementById('t1_prevIntervention').value = t1.prevIntervention||'';
+                document.getElementById('t1_familyInfo').value = t1.familyInfo||'';
+            }
+            if (data.t2) {
+                const t2 = data.t2;
+                document.getElementById('t2a_parentName').value = t2.a_parentName||'';
+                document.getElementById('t2a_relation').value = t2.a_relation||'';
+                document.getElementById('t2a_childName').value = t2.a_childName||'';
+                document.getElementById('t2a_therapist').value = t2.a_therapist||'';
+                document.getElementById('t2a_date').value = t2.a_date||'';
+                document.getElementById('t2b_parentName').value = t2.b_parentName||'';
+                document.getElementById('t2b_relation').value = t2.b_relation||'';
+                document.getElementById('t2b_childName').value = t2.b_childName||'';
+                document.getElementById('t2b_therapist').value = t2.b_therapist||'';
+                document.getElementById('t2b_date').value = t2.b_date||'';
+                document.getElementById('t2c_signature').value = t2.c_signature||'';
+                document.getElementById('t2c_auth_yes').checked = (t2.c_auth === '同意');
+                document.getElementById('t2c_auth_no').checked = (t2.c_auth === '不同意');
+                document.getElementById('t2c_date').value = t2.c_date||'';
+            }
+            if (data.t3) {
+                const t3 = data.t3;
+                document.getElementById('t3_archiveNo').value = t3.archiveNo||'';
+                document.getElementById('t3_startDate').value = t3.startDate||'';
+                document.getElementById('t3_endDate').value = t3.endDate||'';
+                document.getElementById('t3_domain').value = t3.domain||'社交沟通与社会适应';
+                document.getElementById('t3_baseline').value = t3.baseline||'';
+                document.getElementById('t3_longGoal1').value = t3.longGoal1||'';
+                document.getElementById('t3_longGoal2').value = t3.longGoal2||'';
+                document.getElementById('t3_longGoal3').value = t3.longGoal3||'';
+                document.getElementById('t3_shortGoal1').value = t3.shortGoal1||'';
+                document.getElementById('t3_shortEval1').value = t3.shortEval1||'';
+                document.getElementById('t3_shortGoal2').value = t3.shortGoal2||'';
+                document.getElementById('t3_shortEval2').value = t3.shortEval2||'';
+                document.getElementById('t3_shortGoal3').value = t3.shortGoal3||'';
+                document.getElementById('t3_shortEval3').value = t3.shortEval3||'';
+                document.getElementById('t3_strategy').value = t3.strategy||'';
+                document.getElementById('t3_planner').value = t3.planner||'';
+                document.getElementById('t3_planDate').value = t3.planDate||'';
+            }
+            if (data.t4) {
+                document.getElementById('t4_datetime').value = data.t4.datetime||'';
+                document.getElementById('t4_executor').value = data.t4.executor||'';
+                document.getElementById('t4_participants').value = data.t4.participants||'';
+                restoreDynamicRows('t4_activityRows', ['t4_col1','t4_col2','t4_col3','t4_col4'], data.t4.activityRows, addRowT4);
+                document.getElementById('t4_summary').value = data.t4.summary||'';
+            }
+            if (data.t5) {
+                document.getElementById('t5_period').value = data.t5.period||'';
+                document.getElementById('t5_recorder').value = data.t5.recorder||'';
+                if (data.t5.rows && data.t5.rows.length===5) {
+                    for (let i=1; i<=5; i++) {
+                        const r = data.t5.rows[i-1];
+                        document.getElementById('t5_row'+i+'_mon').value = r.mon||'';
+                        document.getElementById('t5_row'+i+'_tue').value = r.tue||'';
+                        document.getElementById('t5_row'+i+'_wed').value = r.wed||'';
+                        document.getElementById('t5_row'+i+'_thu').value = r.thu||'';
+                        document.getElementById('t5_row'+i+'_fri').value = r.fri||'';
+                        document.getElementById('t5_row'+i+'_trend').value = r.trend||'';
+                    }
+                }
+                document.getElementById('t5_weekSummary').value = data.t5.weekSummary||'';
+            }
+            if (data.t6) {
+                document.getElementById('t6_month').value = data.t6.month||'';
+                document.getElementById('t6_attendance').value = data.t6.attendance||'';
+                restoreDynamicRows('t6_monthlyRows', ['t6_col1','t6_col2','t6_col3'], data.t6.monthlyRows, addRowT6);
+                document.getElementById('t6_overall').value = data.t6.overall||'';
+            }
+            if (data.t7) {
+                const t7 = data.t7;
+                document.getElementById('t7_archiveNo').value = t7.archiveNo||'';
+                document.getElementById('t7_startDate').value = t7.startDate||'';
+                document.getElementById('t7_endDate').value = t7.endDate||'';
+                document.getElementById('t7_fillDate').value = t7.fillDate||'';
+                document.getElementById('t7_section1').value = t7.section1||'';
+                document.getElementById('t7_section2').value = t7.section2||'';
+                document.getElementById('t7_section3').value = t7.section3||'';
+                document.getElementById('t7_section4').value = t7.section4||'';
+                document.getElementById('t7_workerSign').value = t7.workerSign||'';
+                document.getElementById('t7_parentSign').value = t7.parentSign||'';
+                document.getElementById('t7_signDate').value = t7.signDate||'';
+            }
+            if (data.t8) {
+                document.getElementById('t8_time1').value = data.t8.time1||'';
+                document.getElementById('t8_time2').value = data.t8.time2||'';
+                restoreDynamicRows('t8_indicatorRows', ['t8i_col1','t8i_col2','t8i_col3','t8i_col4'], data.t8.indicatorRows, addRowT8Indicators);
+                restoreDynamicRows('t8_adjustRows', ['t8a_col1','t8a_col2','t8a_col3'], data.t8.adjustRows, addRowT8Adjust);
+            }
+            if (data.t9) {
+                const t9 = data.t9;
+                document.getElementById('t9_archiveNo').value = t9.archiveNo||'';
+                document.getElementById('t9_period').value = t9.period||'';
+                if (t9.reasons) {
+                    document.getElementById('t9_reason1').checked = t9.reasons.reason1||false;
+                    document.getElementById('t9_reason2').checked = t9.reasons.reason2||false;
+                    document.getElementById('t9_reason3').checked = t9.reasons.reason3||false;
+                    document.getElementById('t9_reasonOther').value = t9.reasons.reasonOther||'';
+                }
+                document.getElementById('t9_summary').value = t9.summary||'';
+                document.getElementById('t9_remaining').value = t9.remaining||'';
+                document.getElementById('t9_followUp').value = t9.followUp||'';
+                document.getElementById('t9_parentFeedback').value = t9.parentFeedback||'';
+                document.getElementById('t9_therapistSign').value = t9.therapistSign||'';
+                document.getElementById('t9_closeDate').value = t9.closeDate||'';
+            }
+            if (data.t10) {
+                restoreDynamicRows('t10_prefRows', ['t10_col1','t10_col2','t10_col3'], data.t10.prefRows, addRowT10);
+                document.getElementById('t10_parentInterview').value = data.t10.parentInterview||'';
+            }
+        }
+
+        function saveData() {
+            const data = collectAllData();
+            let archiveNo = data.t1.archiveNo || prompt('请输入档案编号作为保存标识：', '');
+            if (!archiveNo) { showToast('保存取消', 'warning'); return; }
+            localStorage.setItem('asd_case_' + archiveNo, JSON.stringify(data));
+            let index = JSON.parse(localStorage.getItem('asd_case_index') || '[]');
+            if (!index.includes(archiveNo)) {
+                index.push(archiveNo);
+                localStorage.setItem('asd_case_index', JSON.stringify(index));
+            }
+            showToast('✅ 数据已保存！档案编号：' + archiveNo, 'success');
+        }
+
+        function loadData() {
+            let index = JSON.parse(localStorage.getItem('asd_case_index') || '[]');
+            if (!index.length) { showToast('没有已保存的记录', 'warning'); return; }
+            let archiveNo;
+            if (index.length === 1) {
+                archiveNo = index[0];
+                if (!confirm('加载档案编号为 "' + archiveNo + '" 的记录？')) return;
+            } else {
+                archiveNo = prompt('已保存的档案编号：\n' + index.join('\n') + '\n\n请输入要加载的编号：', '');
+                if (!archiveNo) return;
+            }
+            const raw = localStorage.getItem('asd_case_' + archiveNo);
+            if (!raw) { showToast('未找到该记录', 'warning'); return; }
+            try {
+                restoreAllData(JSON.parse(raw));
+                showToast('✅ 数据已加载：' + archiveNo, 'success');
+            } catch (e) {
+                showToast('数据解析失败', 'warning');
+            }
+        }
+
+        function clearAll() {
+            if (!confirm('确定清空所有表单内容吗？')) return;
+            document.querySelectorAll('#mainContent input[type="text"], #mainContent input[type="date"]').forEach(el => el.value = '');
+            document.querySelectorAll('#mainContent textarea').forEach(el => el.value = '');
+            document.querySelectorAll('#mainContent select').forEach(el => el.selectedIndex = 0);
+            document.querySelectorAll('#mainContent input[type="checkbox"]').forEach(el => el.checked = false);
+            document.querySelectorAll('#mainContent input[type="radio"]').forEach(el => el.checked = false);
+            restoreDynamicRows('t4_activityRows', ['t4_col1','t4_col2','t4_col3','t4_col4'], [['','','','']], addRowT4);
+            restoreDynamicRows('t6_monthlyRows', ['t6_col1','t6_col2','t6_col3'], [['','','']], addRowT6);
+            restoreDynamicRows('t8_indicatorRows', ['t8i_col1','t8i_col2','t8i_col3','t8i_col4'], [['','','','']], addRowT8Indicators);
+            restoreDynamicRows('t8_adjustRows', ['t8a_col1','t8a_col2','t8a_col3'], [['','','']], addRowT8Adjust);
+            restoreDynamicRows('t10_prefRows', ['t10_col1','t10_col2','t10_col3'], [['','','']], addRowT10);
+            for (let i=1; i<=5; i++) {
+                document.getElementById('t5_row'+i+'_mon').value = '';
+                document.getElementById('t5_row'+i+'_tue').value = '';
+                document.getElementById('t5_row'+i+'_wed').value = '';
+                document.getElementById('t5_row'+i+'_thu').value = '';
+                document.getElementById('t5_row'+i+'_fri').value = '';
+                document.getElementById('t5_row'+i+'_trend').value = '';
+            }
+            showToast('表单已清空', 'success');
+        }
+
+        function exportJSON() {
+            const data = collectAllData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = (data.t1.archiveNo || '个案记录') + '.json';
+            a.click();
+            showToast('📥 JSON文件已导出', 'success');
+        }
+
+        function importJSON() {
+            document.getElementById('importFileInput').click();
+        }
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!confirm('导入将覆盖当前所有内容，确定继续吗？')) { event.target.value = ''; return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    restoreAllData(JSON.parse(e.target.result));
+                    showToast('📤 JSON数据已导入', 'success');
+                } catch (err) {
+                    showToast('导入失败：JSON格式不正确', 'warning');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function exportWord() {
+            // 构建包含当前数据的Word文档
+            const clone = document.getElementById('mainContent').cloneNode(true);
+            // 移除所有按钮
+            clone.querySelectorAll('.add-row-btn, .delete-row-btn').forEach(btn => btn.remove());
+            // 将所有输入元素替换为只读文本
+            clone.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => {
+                const span = document.createElement('span');
+                span.textContent = el.value || '　';
+                el.parentNode.replaceChild(span, el);
+            });
+            // 处理 select
+            clone.querySelectorAll('select').forEach(sel => {
+                const span = document.createElement('span');
+                span.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
+                sel.parentNode.replaceChild(span, sel);
+            });
+            // 处理 checkbox/radio
+            clone.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
+                const span = document.createElement('span');
+                span.textContent = el.checked ? '✔' : '☐';
+                el.parentNode.replaceChild(span, el);
+            });
+
+            const archiveNo = document.getElementById('t1_archiveNo').value || '未命名';
+            const childName = document.getElementById('t1_name').value || '';
+            const institution = document.getElementById('institutionName').value || '';
+
+            const wordHTML = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                      xmlns:w="urn:schemas-microsoft-com:office:word"
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>个案记录</title>
+                    <style>
+                        body { font-family: "SimSun", serif; font-size: 12pt; margin: 2cm; }
+                        h2 { text-align: center; }
+                        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+                        th, td { border: 1px solid #000; padding: 4px 6px; }
+                        th { background: #f2f2f2; }
+                        .section-title { font-weight: bold; font-size: 14pt; margin-top: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <h2>${institution}</h2>
+                    <h2>孤独症儿童社交训练个案记录</h2>
+                    <p>档案编号：${archiveNo}　　儿童姓名：${childName}</p>
+                    ${clone.outerHTML}
+                </body></html>`;
+
+            const blob = new Blob(['\ufeff' + wordHTML], { type: 'application/msword' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = archiveNo + '_' + (childName || '个案') + '.doc';
+            a.click();
+            showToast('📄 Word文档已导出', 'success');
+        }
+
+        // 初始化确保动态表格至少一行
+        window.onload = function() {
+            if (!document.getElementById('t4_activityRows').children.length) addRowT4();
+            if (!document.getElementById('t6_monthlyRows').children.length) addRowT6();
+            if (!document.getElementById('t8_indicatorRows').children.length) addRowT8Indicators();
+            if (!document.getElementById('t8_adjustRows').children.length) addRowT8Adjust();
+            if (!document.getElementById('t10_prefRows').children.length) addRowT10();
+        };
+
+        // 快捷键保存
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveData();
+            }
+        });
+    </script>
+</body>
+</html>
